@@ -19,7 +19,7 @@ The main goal of this project is to integrate **Kubernetes** and **Nginx** into 
 
 - [x] Initial system design and architecture planning (Mermaid ERD & Flowcharts).
 - [x] Baseline cleanup and migration to a decoupled Client/Server structure.
-- [ ] Containerize PostgreSQL and MongoDB environments using Docker Compose.
+- [x] Containerize PostgreSQL and MongoDB environments using Docker Compose.
 - [ ] Implement the Node.js backend with TypeORM and Mongoose.
 - [ ] Develop the Angular frontend and integrate the Spotify Web API.
 - [ ] Configure Nginx as a Reverse Proxy and API Gateway.
@@ -98,6 +98,44 @@ erDiagram
         int difficulty
         object[] comments
     }
+```
+
+## Backend Folder Structure
+```
+app/
+├── src/
+│   ├── features/
+│   │   ├── auth/            # All files related to user authentication
+│   │   │   ├── auth.controller.ts   # Request handlers: process input and call 'auth' services
+│   │   │   ├── auth.model.ts        # Database schemas and data models of 'auth' related
+│   │   │   ├── auth.route.ts        # Define API endpoints of 'auth' and map them to controllers
+│   │   │   └── auth.service.ts      # Core business logic; the "brain" of the 'auth' features
+│   │   │
+│   │   ├── users/           # All files related to user management
+│   │   │   ├── user.controller.ts   # Request handlers: process input and call 'users' services
+│   │   │   ├── user.model.ts        # Database schemas and data models of 'users' related
+│   │   │   ├── user.route.ts        # Define API endpoints of 'users' and map them to controllers
+│   │   │   └── user.service.ts      # Core business logic; the "brain" of the 'users features
+│   │   │
+│   │   └── product1,...,n/        # All files related to products
+│   │       ├── product1.controller.ts  # Request handlers: process input and call 'product' services
+│   │       ├── product1.model.ts       # Database schemas and data models of 'products' related
+│   │       ├── product1.route.ts       # Define API endpoints of 'products' and map them to controllers
+│   │       └── product1.service.ts     # Core business logic; the "brain" of the 'products' features
+│   │
+|   ├── api/                # API entry points (e.g., v1/)
+│   ├── config/             # Centralized configuration files (DB, auth, etc.)
+│   ├── middleware/         # Custom Express middleware (auth, logging, etc.)
+│   ├── utils/              # Shared helper functions and reusable code
+│   │
+│   └── index.ts            # The main entry point for the application logic
+|
+├── tests/                  # All unit and integration tests
+├── .env                    # All variable environments for App
+├── .gitignore              # This file includes what are all file/ folders should not to move to your Git repo
+├── package.json
+├── server.ts               # Sets up and starts the server
+└── tsconfig.json
 ```
 
 ## Local Development Setup (WIP)
