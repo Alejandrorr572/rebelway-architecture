@@ -60,7 +60,7 @@ flowchart TD
 
 ## Data Model
 
-```Mermaid
+```mermaid
 erDiagram
     %% PostgreSQL (Relational & Immutable Domain)
     ARTIST ||--o{ SONG : "composes"
