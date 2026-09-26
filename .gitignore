@@ -1,0 +1,73 @@
+# =========================
+# Dependencias y Caché (Node & Angular)
+# =========================
+node_modules/
+.npm/
+.angular/
+*.tsbuildinfo
+
+# =========================
+# Archivos de Compilación (Builds)
+# =========================
+dist/
+build/
+out/
+client/dist/
+server/dist/
+
+# =========================
+# Testing y Cobertura
+# =========================
+coverage/
+.nyc_output/
+
+# =========================
+# Variables de Entorno y Secretos
+# =========================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# =========================
+# Volúmenes Locales de Docker (Bases de Datos)
+# =========================
+pg-data/
+mongo-data/
+db-data/
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# Editores y Entornos (VS Code, IntelliJ)
+# =========================
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# =========================
+# Sistema Operativo
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
