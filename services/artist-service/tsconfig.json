@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2021",
+    "module": "node16",
+    "moduleResolution": "node16",
+    "esModuleInterop": true,
+    
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    
+    "strictPropertyInitialization": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src/**/*",
+    "config/**/*"
+  ]
+}
