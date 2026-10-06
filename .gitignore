@@ -5,6 +5,7 @@ node_modules/
 .npm/
 .angular/
 *.tsbuildinfo
+package-lock.json
 
 # =========================
 # Archivos de Compilación (Builds)
