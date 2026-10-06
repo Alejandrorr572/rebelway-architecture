@@ -1,7 +1,7 @@
-import 'reflect-metadata'; // ¡Obligatorio para TypeORM! Debe ir al principio
+import 'reflect-metadata'; 
 import express from 'express';
-import { AppDataSource } from './config/database'; // Ajusta la ruta a tu config
-import artistRoutes from './artist/artist.route'; // Ajusta la ruta a tu router
+import { AppDataSource } from './config/database'; 
+import artistRoutes from './artist/artist.route'; 
 
 const app = express();
 const PORT = process.env.PORT || 4001; 

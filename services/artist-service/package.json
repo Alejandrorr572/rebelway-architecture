@@ -1,5 +1,5 @@
 {
-  "name": "artists-service",
+  "name": "artist-service",
   "version": "1.0.0",
   "private": true,
   "main": "dist/app.js",

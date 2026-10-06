@@ -9,10 +9,15 @@
   ],
   "scripts": {
     "install:all": "npm install",
-    "build:authors": "npm run build -w services/authors-service",
-    "dev:authors": "npm run dev -w services/authors-service"
+    "build:artist": "npm run build -w services/artist-service",
+    "dev:artist": "npm run dev -w services/artist-service",
+    "build:song": "npm run build -w services/song-service",
+    "dev:song": "npm run dev -w services/song-service"
   },
   "devDependencies": {
     "typescript": "^5.3.3"
+  },
+  "overrides": {
+    "braces": "^3.0.3"
   }
 }
