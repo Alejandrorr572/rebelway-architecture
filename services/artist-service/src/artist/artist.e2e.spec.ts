@@ -11,6 +11,12 @@ const testDataSource = new DataSource({
   entities: [Artist],
 });
 
+// Hijack initialize so app.ts doesn't trigger it asynchronously in the background
+const actualInitialize = testDataSource.initialize.bind(testDataSource);
+testDataSource.initialize = async () => {
+  return testDataSource;
+};
+
 // 2. Mock the database config so app.ts uses our testDataSource
 jest.mock('../config/database', () => {
   return {
@@ -41,10 +47,8 @@ describe('Artist API E2E (SQLite In-Memory)', () => {
     // Set NODE_ENV to test to prevent app.listen() from running in app.ts
     process.env.NODE_ENV = 'test';
 
-    // app.ts automatically calls initialize() on import, so we strictly just wait for it.
-    while(!testDataSource.isInitialized) {
-        await new Promise(r => setTimeout(r, 50));
-    }
+    // We explicitly initialize the database here to avoid race conditions with app.ts
+    await actualInitialize();
   });
 
   afterAll(async () => {
