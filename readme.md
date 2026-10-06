@@ -22,8 +22,8 @@ The main goal of this project is to integrate **Kubernetes** and **Nginx** into 
 - [x] Containerize PostgreSQL and MongoDB environments using Docker Compose.
 - [ ] Implement the Node.js Spotify API backend with TypeORM.
 - [ ] Integrate the Spotify Web API in the backend.
-- [ ] Implement the Node.js Post backend with TypeORM.
-- [ ] Develop the Angular frontend and integrate the Spotify Web API.
+- [ ] Implement the Node.js Post backend with MongoDB.
+- [ ] Develop the Angular frontend.
 - [ ] Configure Nginx as a Reverse Proxy and API Gateway.
 - [ ] Orchestrate the entire ecosystem using local Kubernetes (Minikube/Kind).
 
