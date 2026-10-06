@@ -25,36 +25,55 @@ jobs:
       run: npm install
 
     - name: Run Tests with Coverage
+      id: test
       run: |
         npx jest --coverage \
           --coverageThreshold='{"global":{"lines":80,"statements":80,"functions":80,"branches":80}}' \
           --coverageReporters="json-summary" \
           --coverageReporters="text"
 
-    - name: Generate Coverage Badge
+    - name: Generate Badges
       if: always() && github.ref == 'refs/heads/main'
       run: |
         # Extract coverage percentage from json-summary
-        COVERAGE=$(node -e "const summary = require('./coverage/coverage-summary.json'); console.log(Math.round(summary.total.lines.pct));")
+        if [ -f "./coverage/coverage-summary.json" ]; then
+          COVERAGE=$(node -e "const summary = require('./coverage/coverage-summary.json'); console.log(Math.round(summary.total.lines.pct));")
+        else
+          COVERAGE="0"
+        fi
         echo "Coverage: $COVERAGE%"
         
-        # Determine badge color based on percentage
+        # Determine coverage badge color
         if [ "$COVERAGE" -ge 80 ]; then
-          COLOR="success"
+          COVERAGE_COLOR="success"
         else
-          COLOR="critical"
+          COVERAGE_COLOR="critical"
         fi
         
-        # Download the badge from shields.io
-        mkdir -p badges
-        curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}" > badges/coverage.svg
+        # Determine test badge status and color
+        TEST_STATUS="${{ steps.test.outcome }}"
+        if [ "$TEST_STATUS" == "success" ]; then
+          TEST_COLOR="success"
+          TEST_TEXT="passing"
+        else
+          TEST_COLOR="critical"
+          TEST_TEXT="failing"
+        fi
         
-    - name: Commit and push badge
+        # Download the badges from shields.io
+        mkdir -p badges
+        curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COVERAGE_COLOR}" > badges/coverage.svg
+        curl -s "https://img.shields.io/badge/tests-${TEST_TEXT}-${TEST_COLOR}" > badges/tests.svg
+        
+    - name: Commit and push badges
       if: always() && github.ref == 'refs/heads/main'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add badges/coverage.svg
-        git commit -m "docs: update coverage badge [skip ci]" || echo "No changes to commit"
+        git add badges/coverage.svg badges/tests.svg
+        git commit -m "docs: update badges [skip ci]" || echo "No changes to commit"
+        
+        # Rebase with remote to avoid rejected pushes if another commit was made
+        git pull --rebase origin main
         git push
 
