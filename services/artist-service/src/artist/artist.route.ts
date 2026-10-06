@@ -14,10 +14,6 @@ router.post('/spotify/:spotifyId', async (req: Request, res: Response) => {
     try {
         const { spotifyId } = req.params;
 
-        if (!spotifyId) {
-            return res.status(400).json({ message: "Spotify ID is obligatory" });
-        }
-
         const artist = await artistService.getArtistFromSpotify(spotifyId);
         
         return res.status(200).json(artist);

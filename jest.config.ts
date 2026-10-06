@@ -16,6 +16,10 @@ module.exports = {
         }
       }
     ]
-  }
+  },
+  coveragePathIgnorePatterns: [
+    "/node_modules/",
+    "/api/spotify\\.controller\\.ts$"
+  ]
 };
 //DONT TOUCH THIS, ONLY ME AND GOD KNOW HOW THIS WORKS

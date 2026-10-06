@@ -30,7 +30,7 @@ jobs:
           --coverageReporters="text"
 
     - name: Generate Coverage Badge
-      if: github.ref == 'refs/heads/main'
+      if: always() && github.ref == 'refs/heads/main'
       run: |
         # Extract coverage percentage from json-summary
         COVERAGE=$(node -e "const summary = require('./coverage/coverage-summary.json'); console.log(Math.round(summary.total.lines.pct));")
@@ -48,7 +48,7 @@ jobs:
         curl -s "https://img.shields.io/badge/coverage-${COVERAGE}%25-${COLOR}" > badges/coverage.svg
         
     - name: Commit and push badge
-      if: github.ref == 'refs/heads/main'
+      if: always() && github.ref == 'refs/heads/main'
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"

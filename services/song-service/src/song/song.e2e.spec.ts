@@ -127,4 +127,13 @@ describe('Song API E2E (SQLite In-Memory)', () => {
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('message', 'Song not found');
   });
+
+  // Tests for the /spotify proxy route to boost coverage
+  it('POST /api/songs/spotify/:spotifyId: Should fetch from mock API and save', async () => {
+    const mockSpotifyId = 'mock-spotify-song-id';
+    const response = await request(app).post(`/api/songs/spotify/${mockSpotifyId}`);
+    
+    expect(response.status).toBe(200);
+    expect(response.body.spotifyId).toBe(mockSpotifyId);
+  });
 });
