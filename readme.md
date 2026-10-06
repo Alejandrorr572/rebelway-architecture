@@ -1,5 +1,6 @@
 # RebelWay Guitar Gallery
 ![Coverage Badge](./badges/coverage.svg)
+![Tests Badge](./badges/tests.svg)
 
 
 *A microservices-based full-stack application initially designed as a personal guitar cover gallery, with an architecture ready to scale into a niche social media platform.*
