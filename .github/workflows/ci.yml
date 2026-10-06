@@ -74,6 +74,6 @@ jobs:
         git commit -m "docs: update badges [skip ci]" || echo "No changes to commit"
         
         # Rebase with remote to avoid rejected pushes if another commit was made
-        git pull --rebase origin main
+        git pull --rebase --autostash origin main
         git push
 
