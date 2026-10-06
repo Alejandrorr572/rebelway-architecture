@@ -9,16 +9,18 @@ const PORT = process.env.PORT || 4001;
 // Middlewares
 app.use(express.json()); 
 
-// Rutas
+// Routes
 app.use('/api/artists', artistRoutes);
 
 AppDataSource.initialize()
     .then(() => {
         console.log("Connection has been succesfully established");
         
-        app.listen(PORT, () => {
-            console.log(`Artist service running in port: ${PORT}`);
-        });
+        if (process.env.NODE_ENV !== 'test') {
+            app.listen(PORT, () => {
+                console.log(`Artist service running in port: ${PORT}`);
+            });
+        }
     })
     .catch((error) => {
         console.error("Error when connecting to the db:", error);

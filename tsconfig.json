@@ -10,10 +10,12 @@
     
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "types": ["jest"]
   },
-  "include": [
-    "src/**/*",
-    "config/**/*"
+  "exclude": [
+    "node_modules",
+    "**/dist",
+    "**/build"
   ]
 }

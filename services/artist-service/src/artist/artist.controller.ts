@@ -2,7 +2,7 @@ import { Artist } from "./artist.model";
 import { AppDataSource } from "../config/database";
 
 export class ArtistController {
-    async create(artistData: { name: string; spotify_id: string; spotify_url: string; }) {
+    async create(artistData: { name: string; spotifyId: string; spotifyUrl: string; }) {
         const newArtist = AppDataSource
             .getRepository(Artist)
             .create(artistData);

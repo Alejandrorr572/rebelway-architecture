@@ -24,11 +24,11 @@ export class ArtistService {
         // Calling the spotify api
         const spotifyData = await this.spotifyService.getAuthorData(spotifyId);
 
-        // Wee create the Artist and save it
+        // We create the Artist and save it
         const newArtist = await this.artistController.create({
             name: spotifyData.name,
-            spotify_id: spotifyData.spotifyId,
-            spotify_url: spotifyData.spotifyUrl
+            spotifyId: spotifyData.spotifyId,
+            spotifyUrl: spotifyData.spotifyUrl
         });
 
         await this.artistController.save(newArtist);
