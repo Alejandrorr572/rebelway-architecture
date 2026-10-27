@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+**/coverage
+**/.env
+**/.env.*
+.git
+.github
+badges
+client
+pg-data
+mongo-data

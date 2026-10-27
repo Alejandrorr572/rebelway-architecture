@@ -11,9 +11,15 @@
     "strictPropertyInitialization": false,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["jest"]
+    "types": ["node", "jest"],
+
+    "rootDir": "src",
+    "outDir": "dist"
   },
   "include": [
     "src/**/*"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
   ]
 }

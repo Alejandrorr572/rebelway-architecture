@@ -44,7 +44,7 @@ describe('ArtistService Integration (SQLite In-Memory)', () => {
     (MockSpotifyService as jest.Mock).mockImplementation(() => mockSpotifyServiceInstance);
     
     // Instantiate the actual ArtistService
-    // It will internally pick up the mocked AppDataSource via the ArtistController
+    // It will internally pick up the mocked AppDataSource via the ArtistRepository
     artistService = new ArtistService();
   });
 
@@ -72,7 +72,7 @@ describe('ArtistService Integration (SQLite In-Memory)', () => {
     // Verify it was actually saved in the DB
     const dbArtist = await AppDataSource.getRepository(Artist).findOneBy({ id: result.id });
     expect(dbArtist).not.toBeNull();
-    // Note: Due to mismatch in controller create keys (spotify_id vs spotifyId), 
+    // Note: Due to mismatch in repository create keys (spotify_id vs spotifyId), 
     // TypeORM create might ignore them, but the id should definitely be generated.
     expect(dbArtist!.id).toEqual(result.id);
   });

@@ -4,7 +4,6 @@
   "private": true,
   "description": "Monorepo para microservicios de Música con TypeScript",
   "workspaces": [
-    "config-global",
     "services/*"
   ],
   "scripts": {

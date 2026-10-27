@@ -104,6 +104,30 @@ describe('Song API E2E (SQLite In-Memory)', () => {
     expect(response.body).toHaveProperty('message', 'Missing mandatory fields');
   });
 
+  it.each(['duration_ms', 'cover_url', 'artistid'])(
+    'POST /api/songs: Should return 400 Bad Request and not persist the song when "%s" is missing',
+    async (missingField) => {
+      const payload: Record<string, unknown> = {
+        title: 'Incomplete Song',
+        spotifyId: `incomplete-${missingField}`,
+        duration_ms: 200,
+        cover_url: 'http://cover.com',
+        artistid: 1
+      };
+      delete payload[missingField];
+
+      const response = await request(app)
+        .post('/api/songs')
+        .send(payload);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toHaveProperty('message', 'Missing mandatory fields');
+
+      const dbRecord = await testDataSource.getRepository(Song).findOneBy({ spotifyId: payload.spotifyId as string });
+      expect(dbRecord).toBeNull();
+    }
+  );
+
   it('GET /api/songs/:spotifyId: Should return 200 OK and the song JSON data when the song exists in the in-memory database', async () => {
     const existingSpotifyId = 'e2e-existing-song-id';
     const newSong = testDataSource.getRepository(Song).create({
@@ -139,5 +163,50 @@ describe('Song API E2E (SQLite In-Memory)', () => {
     
     expect(response.status).toBe(200);
     expect(response.body.spotifyId).toBe(mockSpotifyId);
+  });
+
+  it('GET /health: Should return 200 OK and status ok when the database is initialized', async () => {
+    const response = await request(app).get('/health');
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ status: 'ok' });
+  });
+
+  it('GET /health: Should return 503 Service Unavailable when the database is not initialized', async () => {
+    (testDataSource as any).isInitialized = false;
+
+    try {
+      const response = await request(app).get('/health');
+
+      expect(response.status).toBe(503);
+      expect(response.body).toHaveProperty('message', 'Database not initialized');
+    } finally {
+      (testDataSource as any).isInitialized = true;
+    }
+  });
+});
+
+describe('Song service startup', () => {
+  it('Should exit the process with code 1 when the database connection fails', async () => {
+    const exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => undefined) as never);
+    const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    const connectionError = new Error('Connection refused');
+
+    // Load a fresh copy of app.ts whose database initialization fails
+    // (resetModules drops the cached database mock used by the API tests above)
+    jest.resetModules();
+    jest.doMock('../config/database', () => ({
+      AppDataSource: { initialize: jest.fn().mockRejectedValue(connectionError) },
+    }));
+    require('../app');
+
+    // Let the rejected initialize() promise settle
+    await new Promise(setImmediate);
+
+    expect(errorSpy).toHaveBeenCalledWith('Error when connecting to the db:', connectionError);
+    expect(exitSpy).toHaveBeenCalledWith(1);
+
+    exitSpy.mockRestore();
+    errorSpy.mockRestore();
   });
 });

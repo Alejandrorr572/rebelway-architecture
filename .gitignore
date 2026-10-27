@@ -71,3 +71,9 @@ yarn-error.log*
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# =========================
+# Asistencia IA
+# =========================
+claude.md
+decisiones/*

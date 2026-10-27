@@ -1,10 +1,8 @@
 import { Router, Request, Response } from "express";
-import { SongService } from "./song.service"; 
-import { SongController } from "./song.controller";
+import { SongService } from "./song.service";
 
 const router = Router();
 const songService = new SongService();
-const songController = new SongController();
 
 /**
  * @route POST /api/songs/spotify/:spotifyId
@@ -15,7 +13,7 @@ router.post('/spotify/:spotifyId', async (req: Request, res: Response) => {
         const { spotifyId } = req.params;
 
         const song = await songService.getSongFromSpotify(spotifyId);
-        
+
         return res.status(200).json(song);
     } catch (error) {
         console.error("Error while getting the Spotify Song:", error);
@@ -31,20 +29,19 @@ router.post('/', async (req: Request, res: Response) => {
     try {
         const { title, spotifyId, duration_ms, cover_url, preview_url, artistid } = req.body;
 
-        if (!title || !spotifyId) {
+        if (!title || !spotifyId || !duration_ms || !cover_url || !artistid) {
             return res.status(400).json({ message: "Missing mandatory fields" });
         }
 
-        const newSong = await songController.create({ 
-            title, 
-            spotifyId, 
-            duration_ms: duration_ms || 0,
-            cover_url: cover_url || '',
+        const savedSong = await songService.createSong({
+            title,
+            spotifyId,
+            duration_ms,
+            cover_url,
             preview_url,
-            artistid: artistid || 0
+            artistid
         });
-        
-        const savedSong = await songController.save(newSong);
+
         return res.status(201).json(savedSong);
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error" });
@@ -58,7 +55,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.get('/:spotifyId', async (req: Request, res: Response) => {
     try {
         const { spotifyId } = req.params;
-        const song = await songController.findOneBySpotifyId(spotifyId);
+        const song = await songService.getSongBySpotifyId(spotifyId);
 
         if (!song) {
             return res.status(404).json({ message: "Song not found" });

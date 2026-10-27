@@ -1,12 +1,12 @@
 import { Artist } from "./artist.model";
 import { AppDataSource } from "../config/database";
 
-export class ArtistController {
+export class ArtistRepository {
     async create(artistData: { name: string; spotifyId: string; spotifyUrl: string; }) {
         const newArtist = AppDataSource
             .getRepository(Artist)
             .create(artistData);
-            
+
         return newArtist;
     }
 
@@ -14,14 +14,14 @@ export class ArtistController {
         const savedArtist = await AppDataSource
             .getRepository(Artist)
             .save(newArtist);
-            
+
         return savedArtist;
     }
 
     async findOneBySpotifyId(spotifyId: string) {
     return await AppDataSource
         .getRepository(Artist)
-        .findOneBy({ spotifyId: spotifyId }); 
+        .findOneBy({ spotifyId: spotifyId });
     }
 
 }

@@ -1,7 +1,7 @@
 import { DataSource } from 'typeorm';
 import { Artist } from '../artist/artist.model'; 
 
-const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, NODE_ENV } = process.env;
+const { DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME, DB_SSL, NODE_ENV } = process.env;
 
 if (!DB_HOST || !DB_PORT || !DB_USER || !DB_PASSWORD || !DB_NAME) {
   throw new Error('Missing required database environment variables.');
@@ -27,10 +27,12 @@ export const AppDataSource = new DataSource({
 
   // 3. Man-In-The-Middle (MITM) Vulnerability: 
   // Enforce SSL connections to the database in production.
-  ssl: isProduction ? { rejectUnauthorized: true } : false,
-  
-  entities: [Artist], 
-  
+  // It can only be disabled explicitly (DB_SSL=false), e.g. for a database inside the same local cluster.
+  ssl: isProduction && DB_SSL !== 'false' ? { rejectUnauthorized: true } : false,
+
+  entities: [Artist],
+
   // Use migrations for schema changes instead of synchronize
-  migrations: ['src/migration/**/*.ts'],
+  // Resolved from this file so it works both from src (.ts) and from dist (.js)
+  migrations: [__dirname + '/../migration/*.{ts,js}'],
 });

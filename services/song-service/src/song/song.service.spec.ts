@@ -123,5 +123,55 @@ describe('SongService', () => {
     expect(mockRepository.findOneBy).toHaveBeenCalledWith({ spotifyId: notFoundSpotifyId });
     expect(mockSpotifyServiceInstance.getSongData).toHaveBeenCalledWith(notFoundSpotifyId);
   });
+
+  it('createSong: Should create and save the song directly, returning the saved entity', async () => {
+    const songData = {
+      title: 'Direct Song',
+      spotifyId: 'direct-song-id',
+      duration_ms: 150000,
+      cover_url: 'http://spotify.com/direct-cover',
+      preview_url: 'http://spotify.com/direct-preview',
+      artistid: 1
+    };
+    const mockCreatedSong = { ...songData };
+    const mockSavedSong = { ...songData, id: 3 };
+
+    mockRepository.create.mockReturnValue(mockCreatedSong);
+    mockRepository.save.mockResolvedValue(mockSavedSong);
+
+    const result = await songService.createSong(songData);
+
+    expect(mockRepository.create).toHaveBeenCalledWith(songData);
+    expect(mockRepository.save).toHaveBeenCalledWith(mockCreatedSong);
+    // Should NOT touch the Spotify API
+    expect(mockSpotifyServiceInstance.getSongData).not.toHaveBeenCalled();
+    expect(result).toEqual(mockSavedSong);
+  });
+
+  it('getSongBySpotifyId: Should return the song found by the repository', async () => {
+    const existingSong = {
+      id: 4,
+      title: 'Found Song',
+      spotifyId: 'found-song-id',
+    };
+
+    mockRepository.findOneBy.mockResolvedValue(existingSong);
+
+    const result = await songService.getSongBySpotifyId('found-song-id');
+
+    expect(mockRepository.findOneBy).toHaveBeenCalledWith({ spotifyId: 'found-song-id' });
+    expect(mockSpotifyServiceInstance.getSongData).not.toHaveBeenCalled();
+    expect(result).toEqual(existingSong);
+  });
+
+  it('getSongBySpotifyId: Should return null when the repository finds nothing, without calling the Spotify API', async () => {
+    mockRepository.findOneBy.mockResolvedValue(null);
+
+    const result = await songService.getSongBySpotifyId('missing-song-id');
+
+    expect(mockRepository.findOneBy).toHaveBeenCalledWith({ spotifyId: 'missing-song-id' });
+    expect(mockSpotifyServiceInstance.getSongData).not.toHaveBeenCalled();
+    expect(result).toBeNull();
+  });
 });
 

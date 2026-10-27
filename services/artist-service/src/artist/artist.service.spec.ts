@@ -138,5 +138,53 @@ describe('ArtistService', () => {
     // Ensures we attempted to fall back to the Spotify API when not found in DB
     expect(mockSpotifyServiceInstance.getAuthorData).toHaveBeenCalledWith(notFoundSpotifyId);
   });
+
+  it('createArtist: Should create and save the artist directly, returning the saved entity', async () => {
+    const artistData = {
+      name: 'Direct Artist',
+      spotifyId: 'direct-id-1',
+      spotifyUrl: 'http://spotify.com/direct',
+    };
+    const mockCreatedArtist = { ...artistData };
+    const mockSavedArtist = { ...artistData, id: 3 };
+
+    mockRepository.create.mockReturnValue(mockCreatedArtist);
+    mockRepository.save.mockResolvedValue(mockSavedArtist);
+
+    const result = await artistService.createArtist(artistData);
+
+    expect(mockRepository.create).toHaveBeenCalledWith(artistData);
+    expect(mockRepository.save).toHaveBeenCalledWith(mockCreatedArtist);
+    // Should NOT touch the Spotify API
+    expect(mockSpotifyServiceInstance.getAuthorData).not.toHaveBeenCalled();
+    expect(result).toEqual(mockSavedArtist);
+  });
+
+  it('getArtistBySpotifyId: Should return the artist found by the repository', async () => {
+    const existingArtist = {
+      id: 4,
+      name: 'Found Artist',
+      spotifyId: 'found-id',
+      spotifyUrl: 'http://spotify.com/found',
+    };
+
+    mockRepository.findOneBy.mockResolvedValue(existingArtist);
+
+    const result = await artistService.getArtistBySpotifyId('found-id');
+
+    expect(mockRepository.findOneBy).toHaveBeenCalledWith({ spotifyId: 'found-id' });
+    expect(mockSpotifyServiceInstance.getAuthorData).not.toHaveBeenCalled();
+    expect(result).toEqual(existingArtist);
+  });
+
+  it('getArtistBySpotifyId: Should return null when the repository finds nothing, without calling the Spotify API', async () => {
+    mockRepository.findOneBy.mockResolvedValue(null);
+
+    const result = await artistService.getArtistBySpotifyId('missing-id');
+
+    expect(mockRepository.findOneBy).toHaveBeenCalledWith({ spotifyId: 'missing-id' });
+    expect(mockSpotifyServiceInstance.getAuthorData).not.toHaveBeenCalled();
+    expect(result).toBeNull();
+  });
 });
 

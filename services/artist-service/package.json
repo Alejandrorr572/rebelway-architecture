@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
-    "dev": "nodemon --watch src --ext ts --exec ts-node --project tsconfig.json src/app.ts"
+    "dev": "nodemon --watch src --ext ts --exec ts-node --project tsconfig.json src/app.ts",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d src/config/database.ts",
+    "migration:run": "typeorm migration:run -d dist/config/database.js"
   },
   "dependencies": {
     "express": "^4.19.2",
